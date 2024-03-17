@@ -1,0 +1,77 @@
+\documentclass[12pt]{article}
+
+\usepackage[margin=1in]{geometry}
+	%changes default margins
+
+\usepackage{setspace}
+\singlespacing
+	%\singlespacing,\onehalfspacing,\doublespacing can be set and everything thereafter will use that spacing. You can switch within the document as often as you wish
+	
+\usepackage{parskip}
+%changes paragraphs to have an extra space and new indentation with paragraphs, rather than indenting every new paragraph. This is completely a stylistic choice and neither is better than the other.
+
+
+\usepackage{mathtools,amssymb} %useful math stuff. there are a lot of ams* packages. If you have a math need, it's probably in there
+
+	
+	
+%\usepackage{natbib}
+%\usepackage{biblatex} %natbib is older and available from almost all journals, biblatex is not, but biblatex has more flexibility and options.
+
+%\usepackage[natbib=true]{biblatex} %this often works and requires minimal changes 
+
+%for biblatex you write \textcite{citekey} and \parencite{citekey}
+%for natbib you write \citet{citekey} and \citep{citekey}. Please avoid using \cite{} since you won't control whether it's parenthetical, but you are responsible for whether you use something in text or parenthetically.
+%for \usepackage[natbib=true]{biblatex} you follow the natbib style and you won't have to perform search/replaces in your document, you would only need to change the package call and bibliography call.
+
+\usepackage{natbib}
+\bibliographystyle{chicago}
+
+%other useful packages
+% \usepackage{graphicx} %for including images including pdf
+
+
+
+\title{Using Machine-Learning Methods to Improve Air Temperature from the Outputs of a Numerical Weather Prediction
+Model}
+\date{\today}
+
+\begin{document}
+	
+\maketitle
+	
+\section*{Abstract}
+\section{Introduction}
+\section{Literature review}
+\cite{Goutham2021}
+\cite{Hou2022}
+\cite{Zampieri2023}
+\section{Methodology and data}
+
+\subsection{Methodology}
+
+The aim here is to model the average air temperature at the above-mentioned meteorological stations in Toronto Pearson Airport from the outputs of the NCEP GFS Model, building on the work of \cite{Goutham2021}.
+
+Here, the target variable is the observed air temperature and explanatory variables derive only from the history records from Toronto Pearson Airport. (p=8 explanatory variables: Mean Temp (°C),Max Temp (°C),Min Temp (°C),Total Rain (mm),Total Snow (cm),Total Precip (mm),Snow on Grnd (cm),Spd of Max Gust (km/h))
+
+In the realms of statistics and machine learning, two primary methodologies are commonly employed: parametric and non-parametric approaches. Parametric models entail defining the relationship between outputs and inputs analytically, often based on specific probability distributions such as the Gaussian model. In contrast, non-parametric methods do not hinge on assuming a particular data distribution but instead entail the adjustment of multiple tuning parameters.
+
+\subsubsection{Linear Regression}
+
+Linear regression is a widely used model, which identifies a linear relationship between the response $Y_t$ and the explanatory variables $X_{t-d}^1, X_{t-d}^2,\ldots,X_{t-d}^p$ at a given time $t$ and previous $d$ days history.
+
+\begin{equation}
+	Y_{t} = \beta_0+\sum_{j=1}^p \beta_j X_{t-d}^j + \epsilon_t
+\end{equation}
+
+where the coefiicient $\beta_j$ are the regression coefficients estimated using a least-squares approach, and $\epsilon$ is the error. We use $d=1$ in our model.
+
+For a large number of variables, in order to obtain a precise estimation, it is necessary to select the most relevant variables. Many methods are available, either forwards or backwards, to retain only a subset of the explanatory variables. Forwards selection starts with an empty list of predictors adding one highly significant predictor at each step until a stopping criterion is reached, whereas backwards selection starts with a full list of predictors eliminating one highly insignificant predictor at each step until a stopping criterion is reached. Omitting the Gaussian assumption, Lasso regression (also called $\mathcal{l}^1$ regularization) may be employed to select the most important predictors by adding a penalty term to the least-squares error (\cite{ISL2}; \cite{Tibshirani1996}). This penalty acts as a constraint favouring a weaker sum of the absolute values of the regression coefficients; this results in some of the coefficients reducing to zero, implying that the corresponding explanatory variable is dropped.
+
+\section{Results and discussion}
+\section{Conclusion}
+
+\bibliography{cite}
+
+\end{document}
+
