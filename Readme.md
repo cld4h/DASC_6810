@@ -26,3 +26,37 @@ General Presentation:
 * All margins set at a minimum of 3/4" (1.87 cm)
 * Min pages 15-20, be generous in writing and explanations whatever it takes
 * Share the code when you submit the project to check it.
+
+## Data retrieve
+
+Weather station selecting: 
+https://climate-change.canada.ca/climate-data/#/daily-climate-data
+
+Station inventory list:
+https://collaboration.cmc.ec.gc.ca/cmc/climate/Get_More_Data_Plus_de_donnees/Station%20Inventory%20EN.csv
+
+Historic data downloading:
+https://collaboration.cmc.ec.gc.ca/cmc/climate/Get_More_Data_Plus_de_donnees/
+
+`stationselect.py` read the Station inventory list and filtered out ALL operating stations within one grid in GFS model.
+
+| Name                   | Climate ID | Station ID | Latitude | Longitude |
+| ---------------------- | ---------- | ---------- | -------- | --------- |
+| GRIMSBY MOUNTAIN       | 6133055    | 44123      | 43.18    | -79.56    |
+| PORT WELLER (AUT)      | 6136699    | 7790       | 43.25    | -79.22    |
+| VINELAND STATION RCS   | 6139148    | 31367      | 43.18    | -79.40    |
+| BURLINGTON PIERS (AUT) | 6151061    | 7868       | 43.30    | -79.80    |
+| GEORGETOWN WWTP        | 6152695    | 4923       | 43.64    | -79.88    |
+| HAMILTON A             | 6153193    | 49908      | 43.17    | -79.94    |
+| HAMILTON RBG CS        | 6153301    | 27529      | 43.29    | -79.91    |
+| OAKVILLE TWN           | 6155750    | 45667      | 43.51    | -79.69    |
+| TORONTO CITY           | 6158355    | 31688      | 43.67    | -79.40    |
+| TORONTO CITY CENTRE    | 6158359    | 48549      | 43.63    | -79.40    |
+| TORONTO INTL A         | 6158731    | 51459      | 43.68    | -79.63    |
+
+
+
+GFS model forcast:
+https://www.ncei.noaa.gov/products/weather-climate-models/global-forecast
+
+https://docs.unidata.ucar.edu/ldm/current/basics/source-install-steps.html
