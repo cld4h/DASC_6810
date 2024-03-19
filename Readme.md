@@ -54,6 +54,7 @@ https://collaboration.cmc.ec.gc.ca/cmc/climate/Get_More_Data_Plus_de_donnees/
 | TORONTO CITY CENTRE    | 6158359    | 48549      | 43.63    | -79.40    |
 | TORONTO INTL A         | 6158731    | 51459      | 43.68    | -79.63    |
 
+Data format reference: https://climate.weather.gc.ca/doc/Technical_Documentation.pdf
 
 
 GFS model forcast:
