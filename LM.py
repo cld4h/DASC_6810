@@ -38,7 +38,7 @@ df.dropna(inplace=True)
 #     print(df.loc[i])
 
 # Split the dataset into train and test sets
-X = df.drop(columns=['Unnamed: 0.1', 'Unnamed: 0'])
+X = df.drop(columns=['Unnamed: 0.1', 'Unnamed: 0', "Max Temp (°C)", "Min Temp (°C)", "Total Rain (mm)", "Total Snow (cm)", "Total Precip (mm)", "Snow on Grnd (cm)"])
 X['Month'] = pd.to_datetime(X['Date']).dt.month
 X['Quater'] = np.where(X['Month'].isin([1, 2, 3]), 1,
                         np.where(X['Month'].isin([4, 5, 6]), 2,
@@ -88,4 +88,5 @@ for quarter, model in models.items():
         axs[plt_index,0].plot(list(range(1,1+len(y_pred))),y_pred, color='b')
         axs[plt_index,1].plot(list(range(1,1+len(y_test))),y_test, color='y')
         plt_index = plt_index+1
+    print(mse_scores)
     plt.savefig(f"pic/Predicted-and-Tested_{quarter}.png")  # Save the plot as PNG file
