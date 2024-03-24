@@ -54,6 +54,12 @@ https://collaboration.cmc.ec.gc.ca/cmc/climate/Get_More_Data_Plus_de_donnees/
 | TORONTO CITY CENTRE    | 6158359    | 48549      | 43.63    | -79.40    |
 | TORONTO INTL A         | 6158731    | 51459      | 43.68    | -79.63    |
 
+`datacleaning.py` merges the Temperature data from NCEP and the local weather station data.
+
+`checknull.py` does the missing data imputation for all NAs by calculating the mean of valid value from other 10 weather stations.
+
+`LM.py` uses linear model to fit the data and plot the graph.
+
 Data format reference: https://climate.weather.gc.ca/doc/Technical_Documentation.pdf
 
 
