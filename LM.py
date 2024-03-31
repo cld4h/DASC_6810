@@ -90,3 +90,70 @@ for quarter, model in models.items():
         plt_index = plt_index+1
     print(mse_scores)
     plt.savefig(f"pic/Predicted-and-Tested_{quarter}.png")  # Save the plot as PNG file
+
+for quarter, model in models.items():
+    X_quarter = X[X['Quater'] == quarter]
+    X_quarter['Year'] = pd.to_datetime(X['Date']).dt.year
+    mse_scores = []
+    fig, axs = plt.subplots(ncols=2, nrows=8, figsize=(6,8), layout="constrained")
+    plt_index = 0
+    for year in range(2016,2024):
+        print(year)
+        X_test = X_quarter[X_quarter['Year']==year][selected_variables[quarter]]
+        y_test = X_quarter[X_quarter['Year']==year][response_variable]
+        y_pred = model.predict(X_test)
+        mse = np.mean((y_pred - y_test) ** 2)
+        mse_scores.append(mse) 
+        axs[plt_index,0].plot(list(range(1,1+len(y_pred))),y_pred, color='b')
+        axs[plt_index,0].set_xlabel("Days")
+        axs[plt_index,0].set_ylabel(str(year))
+        axs[plt_index,1].plot(list(range(1,1+len(y_test))),y_test, color='y')
+        axs[plt_index,1].set_xlabel("Days")
+        #axs[plt_index,1].set_ylabel("True Temperature")
+        plt_index = plt_index+1
+    print(mse_scores)
+    axs[0,0].set_title(f'Q{quarter} Predicted Temperature')
+    axs[0,1].set_title(f'Q{quarter} True Temperature')
+    plt.savefig(f"pic/Predicted-and-Tested-InSeq_{quarter}.png")  # Save the plot as PNG file
+
+
+# Test the fitted model in new weather station 51459
+df = pd.read_csv("output/51459-data-nona.csv")
+# Create lagged features for the explanatory variables
+lags = 3  # Number of lagged features to create
+for var in explanatory_variables:
+    for lag in range(1, lags+1):
+        df[f"{var}_lag{lag}"] = df[var].shift(lag)
+
+# Drop rows with missing values (first 3 colmns)
+df.dropna(inplace=True)
+
+X = df.drop(columns=['Unnamed: 0.1', 'Unnamed: 0', "Max Temp (°C)", "Min Temp (°C)", "Total Rain (mm)", "Total Snow (cm)", "Total Precip (mm)", "Snow on Grnd (cm)"])
+X['Month'] = pd.to_datetime(X['Date']).dt.month
+X['Quater'] = np.where(X['Month'].isin([1, 2, 3]), 1,
+                        np.where(X['Month'].isin([4, 5, 6]), 2,
+                                 np.where(X['Month'].isin([7, 8, 9]), 3,
+                                          4)))
+for quarter, model in models.items():
+    X_quarter = X[X['Quater'] == quarter]
+    X_quarter['Year'] = pd.to_datetime(X['Date']).dt.year
+    mse_scores = []
+    fig, axs = plt.subplots(ncols=2, nrows=8, figsize=(6,8), layout="constrained")
+    plt_index = 0
+    for year in range(2016,2024):
+        print(year)
+        X_test = X_quarter[X_quarter['Year']==year][selected_variables[quarter]]
+        y_test = X_quarter[X_quarter['Year']==year][response_variable]
+        y_pred = model.predict(X_test)
+        mse = np.mean((y_pred - y_test) ** 2)
+        mse_scores.append(mse) 
+        axs[plt_index,0].plot(list(range(1,1+len(y_pred))),y_pred, color='b')
+        axs[plt_index,0].set_xlabel("Days")
+        axs[plt_index,0].set_ylabel(str(year))
+        axs[plt_index,1].plot(list(range(1,1+len(y_test))),y_test, color='y')
+        axs[plt_index,1].set_ylabel("Days")
+        plt_index = plt_index+1
+    print(mse_scores)
+    axs[0,0].set_title(f'Q{quarter} Predicted Temperature')
+    axs[0,1].set_title(f'Q{quarter} True Temperature')
+    plt.savefig(f"pic/Predicted-and-Tested-InSeq-51459_{quarter}.png")  # Save the plot as PNG file

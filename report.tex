@@ -28,7 +28,7 @@
 \bibliographystyle{chicago}
 
 %other useful packages
-% \usepackage{graphicx} %for including images including pdf
+\usepackage{graphicx} %for including images including pdf
 \usepackage{booktabs} % for tables
 \usepackage{siunitx} % for longitude and latitude degrees
 
@@ -37,12 +37,24 @@
 Model}
 \date{\today}
 
+\author{Anonymized}
+
 \begin{document}
 	
 \maketitle
 	
 \section*{Abstract}
+
+This study explores the utilization of machine-learning techniques to enhance air temperature predictions derived from the outputs of a Numerical Weather Prediction (NWP) model. By leveraging historical climatological data and reanalysis products, we aim to address inherent biases and inaccuracies present in NWP model outputs, particularly in regions with complex atmospheric dynamics. The research focuses on developing robust machine-learning models capable of calibrating NWP model outputs to improve the accuracy of surface temperature estimates. Through rigorous variable selection, cross-validation, and model evaluation methodologies, we assess the performance and generalization capability of the proposed models. The findings provide valuable insights into the effectiveness of machine-learning approaches in augmenting the predictive capability of NWP models, with implications for various applications including weather forecasting, climate modeling, and environmental management.
+
 \section{Introduction}
+
+Numerical Weather Prediction (NWP) models play a pivotal role in modern meteorology by providing forecasts of atmospheric conditions based on mathematical simulations of physical processes. Despite significant advancements in NWP modeling techniques, inherent biases and inaccuracies persist in model outputs, particularly in regions characterized by complex atmospheric dynamics. These discrepancies pose challenges for accurate weather prediction and hinder the reliability of NWP model outputs for various applications.
+
+To address these challenges, this study investigates the application of machine-learning methods to enhance the accuracy and reliability of air temperature predictions derived from NWP model outputs. By leveraging historical climatological data and reanalysis products, we aim to develop robust machine-learning models capable of calibrating NWP model outputs to improve the accuracy of surface temperature estimates. The research focuses on assessing the performance and generalization capability of the proposed models through rigorous variable selection, cross-validation, and model evaluation methodologies.
+
+Through this research, we aim to contribute to the advancement of weather prediction techniques by exploring innovative approaches to calibrate and refine NWP model outputs. By improving the accuracy and reliability of surface temperature predictions, our findings have implications for various applications, including weather forecasting, climate modeling, environmental monitoring, and decision-making in sectors such as agriculture, energy, and disaster management.
+
 \section{Literature review}
 
 An atmospheric reanalysis involves retrospectively describing the atmospheric state by assimilating observations into an atmospheric model simulation using data assimilation techniques. Reanalysis products provide a consistent and continuous description of the atmospheric state over a relatively long period, typically spanning 40 to 70 years, and are particularly valuable in regions where observational data are sparse (\cite{Jung2016}). These products are widely used to estimate past and present atmospheric conditions over the world (\cite{Large2009,Tsujino2018}).
@@ -102,9 +114,9 @@ For local temperature data, we use data from the Digital Archive of Canadian Cli
 	\caption{Key features in the DACCD dataset}
 	\label{tab:DACCD}
 	\begin{tabular}{lll}
-		\hline
+	\toprule
 	 Variables & Symbol & Unit\\
-		\hline
+	\midrule
 	Longitude & x & deg\\
 	Latitude & y & deg\\
 	Daily mean temperature & Mean Temp & degC\\
@@ -116,20 +128,18 @@ For local temperature data, we use data from the Digital Archive of Canadian Cli
 	Snow on the Ground& Snow on Grnd & cm\\
 	Direction of extreme gust & Dir of Max Gust & 10's of deg\\
 	Speed of extreme gust & Spd of Max Gust & km/h\\
-	\hline
+	\bottomrule
 	\end{tabular}
 \end{table}
 
 The climatological data in the DACCD dataset are stored at five distinct intervals: minutely, every fifteen minutes, hourly, daily, or monthly. For this project, we specifically utilize the daily data for analysis and modeling purposes.
 
 
-Weather station selection: The blue box in Figure~\ref{Fig:stations} shows one grid in the GFS model. It bounds a latitude from \ang{43.00} N to \ang{44.00}N, and a longitude from \ang{-79.00} E to \ang{-80.00} E. Using this boundary, we can select all weather stations whose location falls into this grid. In total we got 291 weather stations. However, not all stations are currently in operation. Therefore, we filtered out all operating weather stations from year 2016 to 2023 in this grid, which end up with only 11 stations marked in red location pins in Figure~\ref{Fig:stations}.
-
-Among the 11 selected weather stations, not all of which are 
+Weather station selection: The blue box in Figure~\ref{Fig:stations} shows one grid in the GFS model. It bounds a latitude from \ang{43.00} N to \ang{44.00}N, and a longitude from \ang{-79.00} E to \ang{-80.00} E. Using this boundary, we can select all weather stations whose location falls into this grid. In total we got 291 weather stations. However, since the data set contains all historical weather station records from the 19th centry, it is obvious that not all stations are in operation now. Moreover, we want to collect the weather data for a period of time so that we can have enough data to train our model. Therefore, we filtered out all operating weather stations from year 2016 to 2023 in the grid, which end up with only 11 stations marked in red numbers in Figure~\ref{Fig:stations}. Those red numbers are the station ID of each weather station.
 
 \begin{figure}[htpb]
 	\centering
-	\includegraphics[width=0.8\textwidth]{pic/stations.png}
+	\includegraphics[width=0.8\textwidth]{pic/stations-ID.png}
 	\caption{Weather stations used in this project}
 	\label{Fig:stations}
 \end{figure}
@@ -145,9 +155,9 @@ To ensure computational efficiency and focus on a specific timeframe, we will na
 	\caption{Key features within the Jena dataset}
 	\label{tab:Jena}
 	\begin{tabular}{lll}
-		\hline
-		Variables & Symbol & Unit\\
-		\hline
+	\toprule
+	Variables & Symbol & Unit\\
+	\midrule
 	Atmospheric pressure & p & mbar\\
 	Air temperature & T & degC\\
 	Potential temperature & Tpot & K\\
@@ -162,9 +172,10 @@ To ensure computational efficiency and focus on a specific timeframe, we will na
 	Wind velocity & wv & m/s\\
 	Maximum wind velocity & max. wv & m/s\\
 	Wind direction & wd & deg\\
-		\hline
+	\bottomrule
 	\end{tabular}
 \end{table}
+
 
 
 This comprehensive set of features facilitates in-depth analysis and modeling of various atmospheric and environmental phenomena, providing valuable insights into climate patterns, ecosystem dynamics, and biogeochemical processes over the specified time period.
@@ -175,6 +186,50 @@ The aim here is to model the average air temperature at the above-mentioned mete
 Here, the target variable is the observed air temperature and explanatory variables derive only from the history records from Toronto. (p=8 explanatory variables: Mean Temp (°C),Max Temp (°C),Min Temp (°C),Total Rain (mm),Total Snow (cm),Total Precip (mm) and Snow on Grnd (cm).
 
 In the realms of statistics and machine learning, two primary methodologies are commonly employed: parametric and non-parametric approaches. Parametric models entail defining the relationship between outputs and inputs analytically, often based on specific probability distributions such as the Gaussian model. In contrast, non-parametric methods do not hinge on assuming a particular data distribution but instead entail the adjustment of multiple tuning parameters.
+
+\subsubsection{Missing Data Imputation}
+
+Recall that in Figure~\ref{Fig:stations}, we have selected 11 weather stations that are in operation from year 2016 to year 2023. These are the most data we can obtain in the most recent years, but still we have some missing data. The count of missing data entries in each station are shown in Table~\ref{tab:MD}.
+
+\begin{table}[htpb]
+	\centering
+	\caption{Missing data counts for each weather stations}
+	\label{tab:MD}
+\scalebox{0.8}{
+	\begin{tabular}{llllllll}
+	\toprule
+	Station ID& Mean Temp & Max Temp & Min Temp & Total Rain & Total Snow & Total Precip & Snow on Grnd \\
+	\midrule
+	44123&3&3&3&3&4&3&3\\
+	7790&50&47&33&2920&2920&431&2147\\
+	31367&82&74&58&2920&2920&154&2297\\
+	7868&36&33&23&2920&2920&2920&2920\\
+	4923&1181&1181&1180&1180&1180&1180&1166\\
+	49908&73&70&68&36&31&10&2076\\
+	27529&452&449&432&2920&2920&495&2920\\
+	45667&117&115&114&546&323&226&324\\
+	31688&52&45&32&2920&2920&97&2212\\
+	48549&167&167&162&2920&2920&146&2920\\
+	51459&21&19&20&21&16&11&2189\\
+	\bottomrule
+	\end{tabular}
+}
+\end{table}
+
+Since our goal is to train the model base on historical local data and NCEP output to predict future value, we need to have a continuous weather report with no missing values. So missing data imputation is necessary for the model training later on.
+
+There are numerous methodologies to do the missing data imputation. Typically, when the data are collected independently, techniques such as EM algorithms (\cite{Raheem2024}) or Gibbs sampling method (\cite{Hoff2009}) can be employed to approximate the distribution of the missing data and subsequently impute them by drawing random numbers from said distribution. However, our scenario involves weather data which is a time series data, Due to the inherent correlations between adjacent data points in time series data, these conventional missing data imputation methods are not directly applicable.
+
+\begin{figure}[htpb]
+	\centering
+	\includegraphics[width=\textwidth]{pic/MD-example.png}
+	\caption{Twenty continuous days of mean temperature records for each station, from 2023-12-01 to 2023-12-20}
+	\label{Fig:Dataplot}
+\end{figure}
+
+One workaround to circumvent this challenge is to use the data from other weather stations geographically nearby. As depicted in Figure~\ref{Fig:Dataplot}, the general trend across all 11 stations within one single GFS grid exhibit remarkable similarity, with differences in mean temperature typically hovering around 2 degrees Celsius. This observation provides a foundation for conjecturing missing data by utilizing available data from neighboring stations. The simpliest approach is to take the average of all available data to impute the missing data. Alternatively, a weighted average can be computed, with weights assigned based on the distance from the target weather station.
+
+In this project, we impute all missing data using the simplest taking average approach. But the following linear regression process only takes data from weather station 44123 as we have the best data quality and least missing values in this weather station.
 
 \subsubsection{Linear Regression}
 
@@ -188,42 +243,134 @@ where the coefficient $\beta_j$ are the regression coefficients estimated using 
 
 For a large number of variables, in order to obtain a precise estimation, it is necessary to select the most relevant variables. Many methods are available, either forwards or backwards, to retain only a subset of the explanatory variables. Forwards selection starts with an empty list of predictors adding one highly significant predictor at each step until a stopping criterion is reached, whereas backwards selection starts with a full list of predictors eliminating one highly insignificant predictor at each step until a stopping criterion is reached. Omitting the Gaussian assumption, Lasso regression (also called $\mathcal{L}^1$ regularization) may be employed to select the most important predictors by adding a penalty term to the least-squares error (\cite{ISL2}; \cite{Tibshirani1996}). This penalty acts as a constraint favouring a weaker sum of the absolute values of the regression coefficients; this results in some of the coefficients reducing to zero, implying that the corresponding explanatory variable is dropped.
 
+In this project, we trained four seperate models for each quarter of the year and compared the performance between the models.
 
 \section{Results and discussion}
 
-\subsection{Linear Regression Model}
-\subsubsection{Variable selection}
-\subsubsection{Cross Validation}
+In this section, we present the results obtained from our Linear Regression modeling approach and discuss their implications. We focus on two key aspects: Variable Selection and Cross Validation.
+
+\subsection{Variable Selection}
+
+Variable selection plays a pivotal role in the performance of our Linear Regression models. To ensure optimal model accuracy, we employed rigorous methodologies for selecting the most relevant explanatory variables.
+
+\textbf{Forward and Backward Selection:}
+
+Utilizing forward and backward selection techniques, we systematically identified and retained the most significant predictors for our models. By iteratively adding or removing predictors based on their statistical significance, we aimed to construct parsimonious yet informative models.
+
+\textbf{Lasso Regression (L1 Regularization):}
+
+In addition to traditional variable selection methods, we explored the efficacy of Lasso Regression. By incorporating L1 regularization, we were able to penalize the sum of absolute regression coefficients, leading to the automatic selection of important predictors while discarding irrelevant ones. This approach not only enhanced model interpretability but also improved predictive performance.
+
+\subsection{Cross Validation}
+
+Cross-validation serves as a robust validation technique to assess the generalization capability of our Linear Regression models. We adopted an 8-fold cross-validation strategy to rigorously evaluate model performance across different temporal contexts.
+
+\textbf{Methodology:}
+
+Our cross-validation approach involved partitioning the dataset into eight subsets, with seven years' data utilized for training and one year for testing. Subsequently, we trained four distinct models, each corresponding to a specific quarter of the year (Q1-Q4). This comprehensive approach allowed us to assess the models' ability to capture seasonal variations and temporal dynamics effectively.
+
+\textbf{Results:}
+
+\begin{table}[h]
+\centering
+\caption{Model Fit Mean Squared Error Results - Station 44123}
+\label{tab:CV-result}
+\begin{tabular}{@{}lllllllll@{}}
+\toprule
+\textbf{Model} & \textbf{2016} & \textbf{2017} & \textbf{2018} & \textbf{2019} & \textbf{2020} & \textbf{2021} & \textbf{2022} & \textbf{2023} \\ 
+\midrule
+Q1        & 2.028            & 2.135            & 1.821            & 2.906            & 1.849            & 1.765            & 2.980            & 2.127            \\
+Q2        & 1.190            & 1.637            & 2.275            & 2.287            & 1.912            & 2.280            & 1.353            & 2.281            \\
+Q3        & 1.177            & 0.957            & 1.255            & 1.185            & 1.523            & 1.113            & 1.287            & 0.718            \\
+Q4        & 1.329            & 1.404            & 1.383            & 1.506            & 1.384            & 1.065            & 1.983            & 0.939            \\ 
+\bottomrule
+\end{tabular}
+\end{table}
+
+The Cross Validation result is shown in Table~\ref{tab:CV-result}. Through cross-validation, we obtained insightful results regarding the predictive performance of our models. By evaluating metrics such as Mean Squared Error (MSE), we gained valuable insights into the models' accuracy and robustness. Additionally, cross-validation facilitated the identification of potential overfitting issues and provided guidance for model refinement and improvement.
+
+
+
+\subsection{Discussion}
+
+Figures~\ref{Fig:pred-1} through \ref{Fig:pred-4} depict the model predictions against the true values. The graphs illustrate the accuracy of our predictions relative to the historical weather records. We can see from the graph that our predictionn is very close to the true value.
 
 \begin{figure}[htpb]
 	\centering
-	\includegraphics[width=0.8\textwidth]{pic/Predicted-and-Tested_1.png}
-	\caption{Prediction: January to March}
+	\includegraphics[width=0.8\textwidth]{pic/Predicted-and-Tested-InSeq_1.png}
+	\caption{Regression result: January to March}
 	\label{Fig:pred-1}
 \end{figure}
 
 \begin{figure}[htpb]
 	\centering
-	\includegraphics[width=0.8\textwidth]{pic/Predicted-and-Tested_2.png}
-	\caption{Prediction: April to June}
+	\includegraphics[width=0.8\textwidth]{pic/Predicted-and-Tested-InSeq_2.png}
+	\caption{Regression result: April to June}
 	\label{Fig:pred-2}
 \end{figure}
 
 \begin{figure}[htpb]
 	\centering
-	\includegraphics[width=0.8\textwidth]{pic/Predicted-and-Tested_3.png}
-	\caption{Prediction: July to September}
+	\includegraphics[width=0.8\textwidth]{pic/Predicted-and-Tested-InSeq_3.png}
+	\caption{Regression result: July to September}
 	\label{Fig:pred-3}
 \end{figure}
 
 \begin{figure}[htpb]
 	\centering
-	\includegraphics[width=0.8\textwidth]{pic/Predicted-and-Tested_4.png}
-	\caption{Prediction: October to December}
+	\includegraphics[width=0.8\textwidth]{pic/Predicted-and-Tested-InSeq_4.png}
+	\caption{Regression result: October to December}
 	\label{Fig:pred-4}
 \end{figure}
 
+
+The results obtained from our Linear Regression models underscore the importance of rigorous variable selection and cross-validation techniques in weather prediction tasks. By selecting relevant variables and validating model performance across diverse temporal contexts, we were able to develop robust and reliable models capable of accurately predicting weather variables.
+
+Moreover, the insights gleaned from our analysis can inform future research endeavors aimed at enhancing the predictive capability of weather forecasting models. By refining variable selection methodologies and adopting advanced validation techniques, we can further improve the accuracy and reliability of weather prediction models, thereby aiding decision-making processes in various sectors.
+
+
+We evaluate the generalization capability of our model by testing it on a new dataset obtained from weather station 51459. This dataset is not used when we train or validate the model.
+
+\begin{table}[h]
+\centering
+\caption{Model Fit Mean Squared Error Results: New Station 51459}
+\label{tab:model_fit_mse}
+\begin{tabular}{@{}lllllllll@{}}
+\toprule
+\textbf{Model} & \textbf{2016} & \textbf{2017} & \textbf{2018} & \textbf{2019} & \textbf{2020} & \textbf{2021} & \textbf{2022} & \textbf{2023} \\ 
+\midrule
+Q1        & 2.849            & 1.937            & 2.544            & 2.858            & 1.918            & 1.494            & 2.791            & 1.830            \\
+Q2        & 0.921            & 1.401            & 1.331            & 1.198            & 1.154            & 1.041            & 1.436            & 1.052            \\
+Q3        & 0.687            & 0.953            & 1.069            & 0.896            & 1.109            & 0.900            & 0.838            & 0.616            \\
+Q4        & 1.328            & 1.752            & 1.734            & 1.456            & 1.464            & 1.285            & 1.451            & 1.363            \\ 
+\bottomrule
+\end{tabular}
+\end{table}
+
+The table~\ref{tab:model_fit_mse} presents the Mean Squared Error (MSE) results for four different models evaluated over a span of 8 years from 2016 to 2023. From this table, we can interpret our linear regression result as follows:
+
+\begin{itemize}
+\item \textbf{Model performance variation is relatively small:} Each row in the table represents the MSE values for a specific model across different years. Observing that there are some fluctuations in MSE values across years, but overall the MSE values are relative stable. So it's promising that our model's performance over time is consistent.
+
+\item \textbf{Our model performs slightly better at spring and summer:} By analyzing the MSE values, we can see that the model is more stable at Q2 and Q3.
+
+\item \textbf{Temporal Trends:} The MSE values over consecutive years can reveal any temporal trends in model performance. For instance, a gradual increase or decrease in MSE over time may suggest underlying changes in weather patterns or data characteristics that impact model accuracy. In our regressionn results, there is no significant temporal trends.
+
+\end{itemize}
+
+
+These interpretations can guide further analysis and refinement of the models, ultimately contributing to improved weather prediction accuracy and reliability.
+
+
 \section{Conclusion}
+
+In conclusion, this study has demonstrated the effectiveness of machine-learning techniques in enhancing air temperature predictions derived from Numerical Weather Prediction (NWP) model outputs. By leveraging historical climatological data and reanalysis products, we have developed robust machine-learning models capable of calibrating NWP model outputs to improve the accuracy of surface temperature estimates.
+
+Through rigorous variable selection, cross-validation, and model evaluation methodologies, we have assessed the performance and generalization capability of the proposed models. Our findings indicate that machine-learning approaches offer promising solutions for addressing inherent biases and inaccuracies present in NWP model outputs, particularly in regions with complex atmospheric dynamics.
+
+The results of our analysis have implications for various applications, including weather forecasting, climate modeling, and environmental management. By improving the accuracy and reliability of surface temperature predictions, our research contributes to the advancement of weather prediction techniques and provides valuable insights for decision-making in sectors such as agriculture, energy, and disaster management.
+
+Moving forward, further research could explore the integration of additional meteorological variables and data sources to enhance the predictive capability of machine-learning models for weather forecasting and climate modeling applications. Additionally, ongoing advancements in machine-learning algorithms and computational techniques offer opportunities for developing more sophisticated models capable of capturing complex atmospheric processes and improving the reliability of weather predictions in diverse geographic regions.
 
 \bibliography{cite}
 

@@ -31,6 +31,33 @@ for station in station_lists:
     print(f"Null values for station {sid}:\n{null_values}")
     dfs[sid] = df
     
+
+import matplotlib.pyplot as plt
+
+# Define the start and end date range
+start_date = '2023-12-01'
+end_date = '2023-12-20'
+
+# Loop through each station
+for sid, df in dfs.items():
+    # Filter the DataFrame for the specified date range
+    df_date_range = df[(df['Date'] >= start_date) & (df['Date'] <= end_date)]
+    
+    # Plot the Mean Temp (°C)
+    plt.plot(df_date_range['Date'], df_date_range['Mean Temp (°C)'], label=sid)
+
+# Set plot title and labels
+plt.title(f'Mean Temperature (°C) from {start_date} to {end_date}')
+plt.xlabel('Date')
+plt.ylabel('Mean Temperature (°C)')
+plt.xticks(rotation=45)
+plt.legend(title='sid')
+plt.tight_layout()
+
+# Show plot
+# plt.show()
+plt.savefig(f"pic/weather-station-records.png")
+
 # Update NULL value:
 dfs_nona = {}
 for station in station_lists:
